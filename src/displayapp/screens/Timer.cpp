@@ -165,9 +165,9 @@ void Timer::OnButtonEvent(lv_obj_t* obj, lv_event_t event) {
 
 
 void Timer::setDone() {
-  lv_label_set_text(time, "00:00");
+  lv_label_set_text(time, "01:30");
   lv_label_set_text(txtPlayPause, Symbols::play);
-  secondsToSet = 0;
-  minutesToSet = 0;
+  secondsToSet = 30;
+  minutesToSet = 1;
   createButtons();
 }
