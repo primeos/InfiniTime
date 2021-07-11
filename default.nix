@@ -33,6 +33,27 @@ let
       mv * $out
     '';
   };
+  adafruit-nrfutil = python3.pkgs.buildPythonPackage rec {
+    pname = "adafruit-nrfutil";
+    version = "0.5.3.post16";
+
+    src = fetchFromGitHub {
+      owner = "adafruit";
+      repo = "Adafruit_nRF52_nrfutil";
+      rev = version;
+      sha256 = "0657fv35khqk5yvizbihh7pz2wpvskx63lb7nnqbq7g56cz3kxsw";
+    };
+
+    doCheck = false; # TODO: Multiple tests fail
+
+    propagatedBuildInputs = with python3.pkgs; [
+      click
+      pyserial
+      ecdsa
+      behave
+      nose
+    ];
+  };
 in stdenv.mkDerivation {
   # https://github.com/JF002/InfiniTime/blob/develop/doc/buildAndProgram.md
 
@@ -48,12 +69,14 @@ in stdenv.mkDerivation {
   nativeBuildInputs = [
     cmake
     (python3.withPackages(ps: with ps; [ click cryptography cbor intelhex ]))
+    adafruit-nrfutil
   ];
 
   cmakeFlags = [
     "-DARM_NONE_EABI_TOOLCHAIN_PATH=${gcc-arm-none-eabi-bin}"
     "-DNRF5_SDK_PATH=${nRF-SDK}"
     "-DNRFJPROG=/dev/null"
+    "-DBUILD_DFU=1"
   ];
 
   installPhase = ''
